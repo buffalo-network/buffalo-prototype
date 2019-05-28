@@ -1,3 +1,3 @@
 const product = require('./product');
 
-module.exports = [].concat(product);
+module.exports = product;

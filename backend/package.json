@@ -26,10 +26,10 @@
   },
   "homepage": "https://github.com/odysseyhack/buffalo#readme",
   "dependencies": {
-    "bigchaindb-driver": "^4.1.0",
+    "base-x": "3.0.4",
+    "bigchaindb-driver": "4.1.0",
     "bip39": "^3.0.1",
-    "hapi": "^18.1.0",
-    "base-x": "3.0.4"
+    "hapi": "^18.1.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

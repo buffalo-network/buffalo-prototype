@@ -174,10 +174,10 @@ async function confirmProduct(newOwnerSeed, transactionId) {
 }
 
 async function getAllAssets() {
-    const assets = await new Promise((resolve, reject) => {
-      connection.searchAssets('buffalonetworkAssetsPrototype').then((response) => {
-        resolve(response);
-      }).catch((error) => {
+  const assets = await new Promise((resolve, reject) => {
+    connection.searchAssets('buffalonetworkAssetsPrototype').then((response) => {
+      resolve(response);
+    }).catch((error) => {
       reject(error);
     });
   });
@@ -189,7 +189,7 @@ async function getAssetDetails(assetId) {
     connection.listTransactions(assetId).then((response) => {
       resolve(response);
     }).catch((error) => {
-    reject(error);
+      reject(error);
     });
   });
 }
@@ -197,12 +197,12 @@ async function getAssetDetails(assetId) {
 async function getAssetsByStatus(assets, status) {
   let availableAssets = []
   let promiseArray = []
-  assets.forEach(async function(asset) {
+  assets.forEach(async function (asset) {
     promiseArray.push(getAssetDetails(asset.id));
   });
-  await Promise.all(promiseArray).then(function(assetDetails) {
-    assetDetails.forEach(function(details) {
-      const lastIndex = details[details.length-1];
+  await Promise.all(promiseArray).then(function (assetDetails) {
+    assetDetails.forEach(function (details) {
+      const lastIndex = details[details.length - 1];
       if (lastIndex.metadata.action === status) {
         availableAssets.push(lastIndex)
       }

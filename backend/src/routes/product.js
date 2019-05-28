@@ -3,7 +3,7 @@ const keyGeneration = require('../utils/keyGenerationUtils');
 
 module.exports = [
 
-// All assets to change products
+  // All assets to change products
   {
     // Input: seed and product
     // Output: product with status available
@@ -13,8 +13,8 @@ module.exports = [
     async handler(req, h) {
       const registerTransaction = await resourceService.registerProduct(req.payload.seed, req.payload.product);
       const giveTransaction = await resourceService.giveProduct(req.payload.seed, registerTransaction.id);
-      return giveTransaction.id
-  }
+      return giveTransaction.id;
+    }
   },
   {
     // Input: seed and productId
@@ -24,7 +24,7 @@ module.exports = [
     config: { auth: false, cors: true },
     async handler(req, h) {
       const giveTransaction = await resourceService.giveProduct(req.payload.seed, req.payload.transactionId);
-      return giveTransaction.id
+      return giveTransaction.id;
     }
   },
   {
@@ -35,7 +35,7 @@ module.exports = [
     config: { auth: false, cors: true },
     async handler(req, h) {
       const takeTransaction = await resourceService.reserveProduct(req.payload.transactionId);
-      return takeTransaction.id
+      return takeTransaction.id;
     }
   },
   {
@@ -46,11 +46,11 @@ module.exports = [
     config: { auth: false, cors: true },
     async handler(req, h) {
       const takeTransaction = await resourceService.confirmProduct(req.payload.newOwner, req.payload.transactionId);
-      return takeTransaction.id
+      return takeTransaction.id;
     }
   },
 
-// All routes for user products
+  // All routes for user products
 
   {
     method: 'GET',
@@ -71,7 +71,7 @@ module.exports = [
     },
   },
 
-// All routes for general platform
+  // All routes for general platform
 
   {
     // Get all assets that are tagged available
@@ -94,4 +94,4 @@ module.exports = [
       return assets;
     },
   },
-  ];
+];
