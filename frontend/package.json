@@ -1,0 +1,44 @@
+{
+  "name": "buffalo-prototype-frontend",
+  "version": "1.0.0",
+  "description": "PoC Module to track product from start and follow the circular flow.",
+  "main": "src/resourceTracker.js",
+  "scripts": {
+    "test": "mocha --recursive *.test.*.js",
+    "lint": "eslint . --ignore-pattern node_modules/",
+    "lintfix": "eslint . --fix",
+    "bundle": "browserify src/resourceTracker.js -t localenvify -s resource_module -o src/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/odysseyhack/buffalo.git"
+  },
+  "keywords": [
+    "circular",
+    "economy",
+    "green",
+    "nature2.0",
+    "utopia"
+  ],
+  "author": "Buffalo-Network",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/odysseyhack/buffalo/issues"
+  },
+  "homepage": "https://github.com/odysseyhack/buffalo#readme",
+  "dependencies": {
+    "bigchaindb-driver": "^4.1.0",
+    "bip39": "^3.0.0",
+    "dotenv": "^7.0.0",
+    "hapi": "^18.1.0",
+    "base-x": "3.0.4",
+    "localenvify": "^1.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-classes": "^0.1.1",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-promise": "^4.1.1"
+  }
+}

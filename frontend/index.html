@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="src/css/rt.css">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+
+    <title>Resource Tracker</title>
+</head>
+
+<body>
+
+<div id="rt-container">
+
+    <!-- This is where our content will be inserted -->
+
+    <div class="rt-header">
+        <h1>🍖Buffalo Network Product Tracker</h1>
+        <div class="rt-button rt-primary">{{resourceTracker.currentIdentity.publicKey}}</div>
+    </div>
+
+    <!-- Page container -->
+    <div class="rt-page-container">
+
+        <!-- Menu -->
+        <div class="rt-menu">
+
+            <div class="rt-menu-item" v-on:click="menuClicked('identity')">
+                <i class="fas fa-user"></i>
+                <div class="rt-menu-item-link">Identity</div>
+            </div>
+
+            <hr>
+
+            <div class="rt-menu-item" v-on:click="menuClicked('assets')">
+                <i class="fas fa-industry"></i>
+                <div class="rt-menu-item-link">Your products</div>
+            </div>
+
+            <div class="rt-menu-item" v-on:click="menuClicked('all-assets')">
+                <i class="fas fa-utensils"></i>
+                <div class="rt-menu-item-link">All products</div>
+            </div>
+
+        </div>
+
+        <!-- Content container -->
+        <div class="rt-content-container">
+
+
+            <!-- Identity pane -->
+            <div v-if="isActive('identity')" class="rt-content-pane">
+
+                <div class="rt-box">
+                    <h2>Your Identity</h2>
+                    <hr>
+                    <p>In this proof of concept, your identity simply is your keypair.</p>
+                </div>
+
+                <div class="rt-box rt-full rt-wide">
+                    <h2>Log in to your identity</h2>
+                    <hr>
+                    <p>Enter your seed below to link your identity.</p>
+                    <div class="rt-control">
+                        <input v-model="identitySeedInput" type="password">
+                        <div class="rt-input-button" v-on:click="identityButtonClicked()">link</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Asset pane -->
+            <div v-if="isActive('assets')" class="rt-content-pane">
+
+                <div class="rt-box">
+                    <h2>Assets | Products</h2>
+                    <hr>
+                    <p>In this proof of concept, the assets in our transactions are products that are currently in circulation in the network.</p>
+                </div>
+
+                <div class="rt-box rt-full rt-wide">
+                    <h2>Create a new product</h2>
+                    <p>Enter a name of the product you want to add to the network:</p>
+                    <input class="rt-control rt-narrow" v-model="assetInput.name" type="text">
+                    <p>Enter location:</p>
+                    <input class="rt-control rt-narrow" v-model="assetInput.location" type="text">
+                    <div class="rt-control">
+                        <div class="rt-input-button" v-on:click="assetButtonClicked()">create</div>
+                    </div>
+                    <br>
+                    <h2>Your products</h2>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>location</th>
+                            <th>transaction ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="asset in assets" v-on:click="transactionClicked(asset.id, true)">
+                            <td>{{asset.asset.data.item.name}}</td>
+                            <td>{{asset.asset.data.item.location}}</td>
+                            <td>{{asset.id}}</td>
+                        </tr>
+                        <tr v-if="assets.size == 0">
+                            <td colspan="2" style="text-align: left">No products.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Transactions pane -->
+            <div v-if="isActive('transactions')" class="rt-content-pane">
+
+                <div class="rt-box rt-wide">
+                    <h2>Transaction chain</h2>
+                    <hr>
+                    <p>Each asset on the network has a list of transactions that have been performed upon it.</p>
+                </div>
+
+                <div class="rt-box rt-wide rt-box-no-margin" v-if="myAssets">
+                    <h2>Perform action on product: {{activeTransaction.asset.data.item.name}}</h2>
+                    <p>Enter an action to perform:</p>
+                    <div class="rt-control">
+                        <input type="text" v-model="actionInput">
+                        <div class="rt-input-button" v-on:click="actionButtonClicked()">process</div>
+                    </div>
+
+                    <h2>OR</h2>
+
+                    <h2>Transfer the product to another owner</h2>
+                    <p>This action is the equivalent of moving the product to another entity that will in turn process it for their purpose.</p>
+                    <p>The receiver enters their keyphrase:</p>
+                    <div class="rt-control">
+                        <input type="password" v-model="otherFirmInput">
+                        <div class="rt-input-button" v-on:click="otherFirmButtonClicked()">transfer</div>
+                    </div>
+                </div>
+
+                <span class="rt-full" v-for="transaction in transactionsForAsset.slice().reverse()">
+                    <div class="rt-arrow rt-full"></div>
+                    <div class="rt-box rt-wide rt-box-no-margin">
+                        <h2>{{transaction.metadata.action}}</h2>
+                        <p>{{new Date(transaction.metadata.date).toLocaleString()}}</p>
+                    </div>
+                    </span>
+
+            </div>
+
+            <!-- All assets pane -->
+            <div v-if="isActive('all-assets')" class="rt-content-pane">
+
+                <div class="rt-box">
+                    <h2>All assets | products</h2>
+                    <hr>
+                    <p>All products on the network (commons) is visible to you. This is what provides the transparency.</p>
+                </div>
+
+                <div class="rt-box rt-full">
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>location</th>
+                            <th>transaction ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="asset of allAssets" v-on:click="transactionClicked(asset.id, false)">
+                            <td>{{asset.data.item.name}}</td>
+                            <td>{{asset.data.item.location}}</td>
+                            <td>{{asset.id}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Vue.js -->
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+<!-- Our bundled code -->
+<script src="src/bundle.js"></script>
+
+<!-- The code linking our webapp to the code we wrote -->
+<script src="src/resource-web.js"></script>
+
+</body>
+
+</html>
